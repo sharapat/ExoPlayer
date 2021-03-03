@@ -64,7 +64,11 @@ class WatchFragment : BaseFragment(R.layout.fragment_video), WatchView {
             playWhenReady = player.playWhenReady
             playbackPosition = player.currentPosition
             currentWindow = player.currentWindowIndex
-            presenter.setPlaybackPosition(safeArgs.url, playbackPosition)
+            if (player.currentPosition < player.duration) {
+                presenter.setPlaybackPosition(safeArgs.url, playbackPosition)
+            } else {
+                presenter.setPlaybackPosition(safeArgs.url, 0)
+            }
             player.release()
         }
     }
