@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="uz.usoft.test.ui.main.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_searchVideoFragment"
+            app:destination="@id/searchVideoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchVideoFragment"
+        android:name="uz.usoft.test.ui.video.search.SearchVideoFragment"
+        android:label="SearchVideoFragment"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchVideoFragment_to_watchFragment"
+            app:destination="@id/watchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchFragment"
+        android:name="uz.usoft.test.ui.video.watch.WatchFragment"
+        android:label="WatchFragment"
+        tools:layout="@layout/fragment_video">
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+</navigation>
