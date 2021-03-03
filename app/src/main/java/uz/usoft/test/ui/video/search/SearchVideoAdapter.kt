@@ -6,31 +6,31 @@ import com.bumptech.glide.Glide
 import uz.usoft.test.R
 import uz.usoft.test.core.extention.inflate
 import uz.usoft.test.core.extention.onClick
-import uz.usoft.test.data.model.Item
+import uz.usoft.test.data.model.Video
 import uz.usoft.test.databinding.ItemVideoBinding
 
 class SearchVideoAdapter : RecyclerView.Adapter<SearchVideoAdapter.SearchVideoViewHolder>() {
 
-    var data: List<Item> = listOf()
+    var data: List<Video> = listOf()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    private var onItemClick: (id: String) -> Unit = {}
-    fun setOnItemClickListener(onItemClick: (id: String) -> Unit) {
+    private var onItemClick: (url: String) -> Unit = {}
+    fun setOnItemClickListener(onItemClick: (url: String) -> Unit) {
         this.onItemClick = onItemClick
     }
 
     inner class SearchVideoViewHolder(private val binding: ItemVideoBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun populateModel(videoItem: Item) {
+        fun populateModel(videoItem: Video) {
             binding.apply {
                 Glide.with(binding.root)
-                    .load(videoItem.snippet.thumbnails.high.url)
+                    .load(videoItem.thumb)
                     .into(videoImage)
-                tvTitle.text = videoItem.snippet.title
+                tvTitle.text = videoItem.title
                 root.onClick {
-                    onItemClick.invoke(videoItem.id.videoId)
+                    onItemClick.invoke(videoItem.sources[0])
                 }
             }
         }

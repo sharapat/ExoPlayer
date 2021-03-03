@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 class ApiModule {
-    private val baseUrl = "https://api.vimeo.com/"
+    private val baseUrl = "https://raw.githubusercontent.com/"
     @Provides
     @Singleton
     fun providesGson(): Gson {
