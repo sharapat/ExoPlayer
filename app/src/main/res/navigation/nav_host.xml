@@ -20,7 +20,7 @@
         android:label="WatchFragment"
         tools:layout="@layout/fragment_video">
         <argument
-            android:name="id"
+            android:name="url"
             app:argType="string" />
     </fragment>
 </navigation>

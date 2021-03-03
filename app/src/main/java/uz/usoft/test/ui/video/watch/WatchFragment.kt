@@ -10,11 +10,13 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import uz.usoft.test.App
 import uz.usoft.test.R
 import uz.usoft.test.core.BaseFragment
 import uz.usoft.test.databinding.FragmentVideoBinding
+import javax.inject.Inject
 
-class WatchFragment : BaseFragment(R.layout.fragment_video), Player.EventListener {
+class WatchFragment : BaseFragment(R.layout.fragment_video), WatchView {
 
     private lateinit var binding: FragmentVideoBinding
     private lateinit var player: SimpleExoPlayer
@@ -23,27 +25,14 @@ class WatchFragment : BaseFragment(R.layout.fragment_video), Player.EventListene
     private var playWhenReady: Boolean = false
     private var playbackPosition: Long = 0
     private var currentWindow: Int = 0
+    @Inject
+    lateinit var presenter: WatchPresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (requireActivity().application as App).component.inject(this)
         binding = FragmentVideoBinding.bind(view)
-    }
-
-    override fun onPlaybackStateChanged(state: Int) {
-        super.onPlaybackStateChanged(state)
-        when (state) {
-            ExoPlayer.STATE_IDLE -> {
-            }
-            ExoPlayer.STATE_BUFFERING -> {
-            }
-            ExoPlayer.STATE_READY -> {
-                player.play()
-            }
-            ExoPlayer.STATE_ENDED -> {
-            }
-            else -> {
-            }
-        }
+        presenter.init(this)
     }
 
     private fun initializePlayer() {
@@ -51,8 +40,7 @@ class WatchFragment : BaseFragment(R.layout.fragment_video), Player.EventListene
             player = SimpleExoPlayer.Builder(requireContext()).build()
         }
         binding.playerView.player = player
-        player.addListener(this)
-        mediaItem = MediaItem.fromUri(safeArgs.id)
+        mediaItem = MediaItem.fromUri(safeArgs.url)
         val dataSourceFactory = DefaultDataSourceFactory(
             requireContext(),
             Util.getUserAgent(requireContext(), "Player")
@@ -61,6 +49,7 @@ class WatchFragment : BaseFragment(R.layout.fragment_video), Player.EventListene
             ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(
                 mediaItem
             )
+        presenter.getPlaybackPosition(safeArgs.url)
         val isResuming = playbackPosition != 0L
         player.setMediaSource(extractorMediaSource, isResuming)
         player.prepare()
@@ -75,7 +64,7 @@ class WatchFragment : BaseFragment(R.layout.fragment_video), Player.EventListene
             playWhenReady = player.playWhenReady
             playbackPosition = player.currentPosition
             currentWindow = player.currentWindowIndex
-            player.removeListener(this)
+            presenter.setPlaybackPosition(safeArgs.url, playbackPosition)
             player.release()
         }
     }
@@ -106,5 +95,9 @@ class WatchFragment : BaseFragment(R.layout.fragment_video), Player.EventListene
         if (Util.SDK_INT >= 24) {
             releasePlayer();
         }
+    }
+
+    override fun setPlaybackPosition(position: Long) {
+        playbackPosition = position
     }
 }

@@ -24,7 +24,7 @@ class SearchVideoFragment : BaseFragment(R.layout.fragment_search), SearchVideoV
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity?.application as App).component.inject(this)
+        (requireActivity().application as App).component.inject(this)
         navController = Navigation.findNavController(view)
         binding = FragmentSearchBinding.bind(view)
             .apply {
