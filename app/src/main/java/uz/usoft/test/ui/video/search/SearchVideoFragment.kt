@@ -10,9 +10,8 @@ import uz.usoft.test.core.BaseFragment
 import uz.usoft.test.core.Resource
 import uz.usoft.test.core.ResourceState
 import uz.usoft.test.core.extention.addVertDivider
-import uz.usoft.test.core.extention.onClick
 import uz.usoft.test.core.extention.visibility
-import uz.usoft.test.data.model.Item
+import uz.usoft.test.data.model.Video
 import uz.usoft.test.databinding.FragmentSearchBinding
 import javax.inject.Inject
 
@@ -31,21 +30,16 @@ class SearchVideoFragment : BaseFragment(R.layout.fragment_search), SearchVideoV
             .apply {
                 rvResult.addVertDivider(requireContext())
                 rvResult.adapter = adapter
-                searchBtn.onClick {
-                    if (!etSearch.text.isNullOrEmpty()) {
-                        presenter.searchVideo(etSearch.text.toString())
-                    }
-                }
             }
         adapter.setOnItemClickListener {
             val action = SearchVideoFragmentDirections.actionSearchVideoFragmentToWatchFragment(it)
             navController.navigate(action)
         }
         presenter.init(this)
-        presenter.searchVideo("")
+        presenter.getVideos()
     }
 
-    override fun render(model: Resource<List<Item>>) {
+    override fun render(model: Resource<List<Video>>) {
         when(model.status) {
             ResourceState.LOADING -> setLoading(true)
             ResourceState.SUCCESS -> {
@@ -62,7 +56,6 @@ class SearchVideoFragment : BaseFragment(R.layout.fragment_search), SearchVideoV
     private fun setLoading(isLoading: Boolean) {
         binding.apply {
             progressBar.visibility(isLoading)
-            etSearch.isEnabled = !isLoading
             rvResult.isEnabled = !isLoading
         }
     }
